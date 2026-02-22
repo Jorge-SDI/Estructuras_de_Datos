@@ -1,0 +1,16 @@
+git ignore
+.DS_Store
+node_modules/
+dist/
+coverage/
+.env
+.idea/
+.exe
+desktop.ini
+Thumbs.db
+*.log
+
+
+
+
+
