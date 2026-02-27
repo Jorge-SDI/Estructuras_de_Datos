@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <vector>
@@ -62,6 +63,29 @@ using namespace std;
         return true;
     }
 
+//funcion booleana que recibe el vector de la struct y una matricula, mas abajo se manda a llamar a otra funcion ya previamente hecha, y si esa funcion no es igual a -1
+//quiere decir que esa matricula no existe, de lo contrario se eliminará la posicion segun esté ubicado el alumno
+//y retorna verdad porque ya fue eliminado
+    bool eliminarAlumno(vector<Alumno>& grupo, int matricula) {
+        int resultado = buscarPorMatricula(grupo, matricula);
+        if (resultado == -1){
+            return false;
+        }
+
+        grupo.erase(grupo.begin() + resultado);
+        return true;
+    }
+
+//se suman todos los promedios y se dividen entre el numero de alumnos segun haya registrados
+    double calcularPromedio(vector<Alumno>& grupo) {
+        float suma = 0, promedio;
+        for (int i = 0; i < grupo.size(); i++) {
+            suma += grupo[i].promedio;
+        }
+        promedio = suma / grupo.size();
+        return promedio;
+    }
+
 int main () {
     vector<Alumno> grupo;
     int opcion;
@@ -85,6 +109,7 @@ int main () {
     if (opcion == 1){
             Alumno temp_alumno;
             cout << "Agregar alumno" << endl;
+            cout << "=================================" << endl;
             cout << "Ingresa matricula: ";
             cin >> temp_alumno.matricula;
             cin.ignore();
@@ -94,13 +119,15 @@ int main () {
             cin >> temp_alumno.promedio;
 
             if (agregarAlumno(grupo, temp_alumno)) {
-                cout << "Alumno agregado correctamente" << endl;
+                cout << "!Alumno agregado correctamente!" << endl;
             } else {
-                cout << "Error: Matricula ya existente" << endl;
+                cout << "!Error: Matricula ya existente!" << endl;
             }
+            cout << endl;
     } else if (opcion == 2){
             cout << "Mostrar alumno" << endl;
             mostrarAlumnos(grupo);
+            cout << endl;
     } else if (opcion == 3){
             cout << "Buscar alumno" << endl;
             int matricula;
@@ -111,10 +138,11 @@ int main () {
             if (resultado != -1) {
                 cout << left << setw(25) << "Nombre" << setw(10) << "Matricula" << setw(10) << "Promedio" << endl;
                 cout << left << setw(25) << grupo[resultado].nombre << setw(10) << grupo[resultado].matricula << setw(10) << grupo[resultado].promedio << endl;
+                cout << endl;
             } else {
                 cout << "Matricula no encontrada!" << endl;
             }
-
+            cout << endl;
     }else if (opcion == 4){
             int matricula;
             string nuevoNombre;
@@ -135,6 +163,56 @@ int main () {
             } else {
                 cout << "Error: Matricula inexistente" << endl;
             }
+            cout << endl;
+    }else if (opcion == 5) {
+        int matricula;
+        cout << "Ingrese la matricula del alumno desea buscar para eliminar: ";
+        cin >> matricula;
+
+        if (eliminarAlumno(grupo, matricula) == true) {
+            cout << "Alumno modificado correctamente" << endl;
+        }else {
+            cout << "Error: Matricula inexistente" << endl;
+        }
+    }else if (opcion == 6){
+        cout << "Promedios en forma descendente" << endl;
+        for (int i = 0; i < grupo.size(); i++) {
+            for (int j = 0; j < grupo.size()-i-1; j++) {
+                if (grupo[j].promedio < grupo[j+1].promedio) {
+                    swap(grupo[j], grupo[j+1]);
+                }
+            }
+        }
+
+        for (int i = 0; i < grupo.size(); i++) {
+            cout << grupo[i].promedio;
+            if (i < grupo.size()-1) {
+                cout << ", ";
+            }
+        }
+        cout << endl;
+    }else if (opcion == 7) {
+        cout << "Promedios en forma ascendente" << endl;
+        for (int i = 0; i < grupo.size(); i++) {
+            for (int j = 0; j < grupo.size()-i-1; j++) {
+                if (grupo[j].promedio > grupo[j+1].promedio) {
+                    swap(grupo[j], grupo[j+1]);
+                }
+            }
+        }
+
+        for (int i = 0; i < grupo.size(); i++) {
+            cout << grupo[i].promedio;
+            if (i < grupo.size()-1) {
+                cout << ", ";
+            }
+        }
+        cout << endl;
+    }else if (opcion == 8) {
+        cout << "Promedio grupal" << endl;
+        double prom = calcularPromedio(grupo);
+        cout << "El promedio es: " << prom << endl;
+        cout << endl;
     }
 
     } while (opcion != 0);
