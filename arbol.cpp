@@ -73,24 +73,18 @@ void PreOrder(Nodo* raiz) {
     }
 }
 
-int mostrarMinimo(Nodo* raiz){
-    if (raiz != nullptr) {
-        if (raiz->izquierdo == nullptr){
-            return raiz->dato;
-        }else {
-            return mostrarMinimo(raiz->izquierdo);
-        }
+Nodo* mostrarMinimo(Nodo* raiz){
+    while (raiz != NULL && raiz->izquierdo != NULL) {
+        raiz = raiz->izquierdo;
     }
+    return raiz;
 }
 
-int mostrarMaximo(Nodo* raiz){
-    if (raiz != nullptr) {
-        if (raiz->derecho == nullptr){
-            return raiz->dato;
-        }else {
-            return mostrarMaximo(raiz->derecho);
-        }
+Nodo* mostrarMaximo(Nodo* raiz){
+    while (raiz != NULL && raiz->derecho != NULL) {
+        raiz = raiz->derecho;
     }
+    return raiz;
 }
 
 Nodo* eliminarValor(Nodo *raiz, int valor) {
@@ -127,6 +121,7 @@ Nodo* eliminarValor(Nodo *raiz, int valor) {
         raiz->dato = sucesor->dato;
         raiz->derecho = eliminarValor(raiz->derecho, sucesor->dato);
     }
+    return raiz;
 }
 
 void mostrarMenu(){
@@ -146,6 +141,35 @@ void mostrarMenu(){
     cout << "Seleccione una opcion: ";
 }
 
+int contarNodosR(Nodo* raiz) {
+    if (raiz == nullptr) return 0;
+
+    return 1 + contarNodosR(raiz->izquierdo) + contarNodosR(raiz->derecho);
+}
+
+int contarHojas(Nodo* raiz) {
+    if (raiz == nullptr) return 0;
+    if (raiz->izquierdo == nullptr && raiz->derecho == nullptr) return 1;
+
+    return contarHojas(raiz->izquierdo) + contarHojas(raiz->derecho);
+}
+
+int contarAltura(Nodo* raiz) {
+    if (raiz == nullptr) return 0;
+    int izquierda = contarAltura(raiz->izquierdo);
+    int derecha = contarAltura(raiz->derecho);
+
+    if (izquierda > derecha) {
+        return  1 + izquierda;
+    }
+    return 1 + derecha;
+}
+
+int contarNodosConUnHijo(Nodo* raiz) {
+    if (raiz == nullptr) return 0;
+    if ((raiz->izquierdo != nullptr && raiz->derecho == nullptr) || (raiz->izquierdo == nullptr && raiz->derecho != nullptr))
+        return 1 + contarNodosConUnHijo(raiz->izquierdo) + contarNodosConUnHijo(raiz->derecho);
+}
 
 int main(){
     Nodo* raiz = nullptr;
@@ -180,17 +204,37 @@ int main(){
             PreOrder(raiz);
             cout << endl;
         }else if (opcion == 6) {
-            cout << "El valor minimo del arbol es: ";
-            mostrarMinimo(raiz);
-            cout << endl;
+            Nodo* min = mostrarMinimo(raiz);
+            if (min != nullptr) {
+                cout << "El valor minimo del arbol es: " << min->dato << endl;
+            }else {
+                cout << "...." << endl;
+            }
         }else if (opcion == 7) {
-            cout << "El valor maximo del arbol es: ";
-            mostrarMaximo(raiz);
-            cout << endl;
+            Nodo* max = mostrarMaximo(raiz);
+            if (max != nullptr) {
+                cout << "El valor mas grande del arbol es: " << max->dato << endl;
+            }else {
+                cout << "...." << endl;
+            }
         }else if (opcion == 8) {
             cout << "Eliminar valor: ";
             cin >> valor;
             raiz = eliminarValor(raiz, valor);
+        }else if (opcion == 9) {
+            int i = contarNodosR(raiz);
+            cout << "Cantidad de nodos del arbol: " << i << endl;
+            cout << endl;
+        }else if (opcion == 10) {
+            int i = contarHojas(raiz);
+            cout << "Cantidad de hojas del arbol: " << i << endl;
+            cout << endl;
+        }else if (opcion == 11) {
+            int alt = contarAltura(raiz);
+            cout << "La altura del arbol es: " << alt << endl;
+        }else if (opcion == 12) {
+            int unHijo = contarNodosConUnHijo(raiz);
+            cout << "El arbol tiene " << unHijo << " nodos con un solo hijo" << endl;
         }
     }while(opcion != 0);
 
