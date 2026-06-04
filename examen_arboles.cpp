@@ -117,6 +117,45 @@ void mostrarNodosHojas(Nodo* raiz){
 	mostrarNodosHojas(raiz->izquierda);
 	mostrarNodosHojas(raiz->derecha);
 }
+	
+Nodo* eliminarImpares(Nodo* raiz){
+	if(raiz == nullptr) return raiz;
+	
+	raiz->izquierda = eliminarImpares(raiz->izquierda);
+	raiz->derecha = eliminarImpares(raiz->derecha);
+	
+	if(raiz->dato % 2 != 0){
+		Nodo* temp = eliminarValor(raiz, raiz->dato);
+		return temp;
+	}
+	
+	return raiz;
+}
+	
+Nodo* duplicarHojas(Nodo* raiz){
+	if(raiz == nullptr) return raiz;
+	
+	if(raiz->izquierda == nullptr && raiz->derecha == nullptr){
+		raiz->derecha = insertar(raiz->derecha, raiz->dato*2);
+		return raiz;
+	}
+	
+	raiz->izquierda = duplicarHojas(raiz->izquierda);
+	raiz->derecha = duplicarHojas(raiz->derecha);
+	
+	return raiz;
+}
+	
+void mostrarNivel(Nodo* raiz, int nivelActual, int nivelBuscado){
+	if(raiz == nullptr) return;
+	
+	if(nivelActual == nivelBuscado){
+		cout << raiz->dato << " ";
+	}
+	
+	mostrarNivel(raiz->izquierda, nivelActual+1, nivelBuscado);
+	mostrarNivel(raiz->derecha, nivelActual+1, nivelBuscado);
+}
 
 void mostrarMenu(){
 	cout << endl;
@@ -124,6 +163,9 @@ void mostrarMenu(){
 	cout << "2. Recorrido InOrder" << endl;
 	cout << "3. Eliminar hojas" << endl;
 	cout << "4. Mostrar nodos hojas" << endl;
+	cout << "5. Eliminar valores impares" << endl;
+	cout << "6. Duplicar nodos hojas" << endl;
+	cout << "7. Mostrar nodos de un nivel" << endl;
 	cout << "Ingrese una opcion: ";
 }
 int main() {
@@ -152,6 +194,23 @@ int main() {
 			cout << endl;
 			cout << "Nodos hojas del arbol" << endl;
 			mostrarNodosHojas(raiz);
+		}else if(opcion == 5){
+			cout << endl;
+			cout << "Valores impares borrados del arbol" << endl;
+			raiz = eliminarImpares(raiz);
+		}else if(opcion == 6){
+			cout << endl;
+			cout << "Valores hojas duplicados" << endl;
+			raiz = duplicarHojas(raiz);
+		}else if(opcion == 7){
+			cout << endl;
+			int nivelBuscado;
+			cout << "Nivel  buscado: ";
+			cin >> nivelBuscado;
+			
+			cout << endl;
+			cout << "Nodos del nivel " << nivelBuscado << endl;
+			mostrarNivel(raiz, 0, nivelBuscado);
 		}else if(opcion == 0){
 			cout << "Saliendo..." << endl;
 		}
